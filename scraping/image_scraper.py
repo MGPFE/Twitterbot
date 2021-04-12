@@ -7,7 +7,7 @@ import threading
 import requests
 import os
 
-#COLORAMA
+# COLORAMA
 init(convert=True)
 
 
@@ -19,11 +19,9 @@ class Image_Scraper:
 		self.var = 1
 		self.i = 0
 
-
 	def delete_file(self, name):
 
 		os.remove(name)
-
 
 	def create_folder(self):
 
@@ -34,24 +32,23 @@ class Image_Scraper:
 
 		os.chdir('Files')
 
-
 	def download_image(self, URL, file_name):
 
-		#print(str(file_name) + '. Starting a thread')
+		# print(str(file_name) + '. Starting a thread')
 
 		r = requests.get(URL)
 		im = Image.open(BytesIO(r.content))
 		im.save(str(file_name) + '.jpg')
 
-		#print(str(file_name) + '. Done!')
-
+		# print(str(file_name) + '. Done!')
 
 	def foodforbot(self, page):
 
 		browser = webdriver.Chrome()
 
 		unsupported_ext = [
-			'spacer', '.png', '.jpeg', '.mp4', '.mov', 'logo', '.gif'
+			'spacer', '.png', '.jpeg',
+			'.mp4', '.mov', 'logo', '.gif'
 		]
 
 		while self.var <= 1:
@@ -68,7 +65,7 @@ class Image_Scraper:
 
 					if len(self.real_list) >= 200:
 						break
-					
+
 					for ext in unsupported_ext:
 						if ext in src['src']:
 							continue
@@ -91,7 +88,8 @@ class Image_Scraper:
 			try:
 				t.start()
 				threads.append(t)
-			except:
+			except Exception as e:
+				# print(e)
 				pass
 			self.i += 1
 

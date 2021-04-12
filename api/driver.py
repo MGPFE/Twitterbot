@@ -1,18 +1,22 @@
 from scraping.image_scraper import Image_Scraper
 from scraping.databases import Db
 from colorama import init, Fore, Style
-import os, os.path
+import os
 import threading
 import time
 import sys
 
-#COLORAMA
+# COLORAMA
 init(convert=True)
 
 
 class Driver:
 
-    def __init__(self, karm, co_il, ile_l, related, s_fix, ile_foll, txt, img, wait_time, prev_tweets, reply_allow, bot):
+    def __init__(
+        self, karm, co_il, ile_l, related,
+        s_fix, ile_foll, txt, img, wait_time,
+        prev_tweets, reply_allow, bot
+    ):
 
         self.karm = karm
         self.co_il = co_il
@@ -34,7 +38,6 @@ class Driver:
         print(f'{Fore.CYAN}{self.bot.what_time()}{Style.RESET_ALL} -- Next action in {Fore.CYAN}{str(int(after))}{Style.RESET_ALL} hour/s! ({Fore.CYAN}{str(self.i)}{Style.RESET_ALL} tweet/s sent!)\n')
         time.sleep(self.co_il)
 
-
     def prnt_timeline(self):
 
         twts = self.bot.check_timeline(self.prev_tweets)
@@ -45,9 +48,8 @@ class Driver:
                 print('')
                 print(f"{Fore.CYAN}{twts['username']}{Style.RESET_ALL}:")
                 print(value)
-    
-        input(f'\nPress {Fore.CYAN}ENTER{Style.RESET_ALL} to continue...')
 
+        input(f'\nPress {Fore.CYAN}ENTER{Style.RESET_ALL} to continue...')
 
     def load_database(self):
 
@@ -85,7 +87,7 @@ class Driver:
         # Dla wstawiania samego obrazu
         ###############################################################
         elif self.img:
-            #DEFINIOWANIE SCRAPERA OBRAZOW
+            # DEFINIOWANIE SCRAPERA OBRAZOW
             self.img_scraper = Image_Scraper()
             if self.karm:
                 web_page = input('\nPlease input a link for images: ')
@@ -102,17 +104,18 @@ class Driver:
                     return True
         ###############################################################
 
-
     def run_threads(self, a_funcs):
 
         threads = [
-                    threading.Thread(target=self.bot.follow_back, args=[self.wait_time]) if a_funcs[1] else None, # Zaobserwuj followersow
-                    threading.Thread(target=self.bot.unfollow_v2, args=[self.wait_time]) if a_funcs[2] else None, # Odfollowuj osoby ktore cie nie obserwuja
-                    threading.Thread(target=self.bot.tweet_like, args=[self.ile_l,
-                                                                        self.related, 
-                                                                        self.wait_time,
-                                                                        self.allow_reply]) if a_funcs[3] else None # Lajkowanie tweetow tweetow (ile tweetow ma polajkowac, co ile sekund)
-                    ]
+            threading.Thread(target=self.bot.follow_back, args=(self.wait_time,)) if a_funcs[1] else None,  # Zaobserwuj followersow
+            threading.Thread(target=self.bot.unfollow_v2, args=(self.wait_time,)) if a_funcs[2] else None,  # Odfollowuj osoby ktore cie nie obserwuja
+            threading.Thread(target=self.bot.tweet_like, args=(
+                self.ile_l,
+                self.related,
+                self.wait_time,
+                self.allow_reply,
+            )) if a_funcs[3] else None  # Lajkowanie tweetow tweetow (ile tweetow ma polajkowac, co ile sekund)
+        ]
 
         for thread in threads:
             if thread is not None:
@@ -124,14 +127,15 @@ class Driver:
 
         # Zaobserwuj losowych uzytkownikow
         if a_funcs[4]:
-            t4 = threading.Thread(target=self.bot.follow_random, args=[self.related,
-                                                                        self.ile_foll, 
-                                                                        self.wait_time,
-                                                                        self.allow_reply])
+            t4 = threading.Thread(target=self.bot.follow_random, args=(
+                self.related,
+                self.ile_foll,
+                self.wait_time,
+                self.allow_reply,
+            ))
 
             t4.start()
             t4.join()
-
 
     def post_tweet(self, add_funcs):
 
@@ -142,7 +146,7 @@ class Driver:
                     if self.txt:
                         self.db.close_db()
                         print('\nDatabase closed!')
-                    
+
                     else:
                         print('')
 
@@ -212,7 +216,6 @@ class Driver:
                 input(f'\nPress {Fore.CYAN}ENTER{Style.RESET_ALL} to exit...')
                 sys.exit()
 
-
     def modular_cycle(self, sett):
 
         if sett[5]:
@@ -246,7 +249,6 @@ class Driver:
                     print('\nThe bot is in standby mode!')
                     t0.join()
 
-
     def default_cycle(self, sett):
 
         DB_FLAG = self.load_database()
@@ -262,5 +264,9 @@ class Driver:
 
 if __name__ == '__main__':
 
-    driver = Driver(None, None, None, None, None, None, None, None, None, None, None, None)
-    #driver.authinput()
+    driver = Driver(
+        None, None, None, None,
+        None, None, None, None,
+        None, None, None, None
+    )
+    # driver.authinput()

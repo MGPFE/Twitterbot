@@ -3,6 +3,8 @@ from configparser import ConfigParser
 from api.twitterbot import Twitterbot
 from api.driver import Driver
 from scraping.databases import Db
+import threading
+import datetime
 import platform
 import time
 import sys
@@ -11,13 +13,13 @@ import os
 # COLORAMA
 init(convert=True)
 
+
 class Main:
 
     def __init__(self):
-        
         self.version = {
             'ver': '1.3.7',
-            'date': '22.09.2020',
+            'date': '21.03.2021',
             'time': '13:39'
         }
         self.create_config()
@@ -29,17 +31,19 @@ class Main:
         elif sys.platform == 'win32':
             self.what_os = 'CLS'
 
-
     def create_config(self):
-
         # CONFIG FILE
         self.config = ConfigParser()
 
-        botconfig = {'text': 'True', 'image': 'False', 'howOften': '14400', 'likes': '10', 'reply_allowed': 'True', 'follows': '5',
-                    'relation': 'python', 'waittime': '10', 'prevtweets': '3', 'mode': '0', 'senderrors': 'True', 'modular': 'False',
-                    'follow_back': 'True', 'unfollow': 'True', 'tweet_like': 'True', 'follow_random': 'True', 'send_tweet': 'True',
-                    'display_ver': 'False'
-                    }
+        botconfig = {
+            'text': 'True', 'image': 'False', 'howOften': '14400',
+            'likes': '10', 'reply_allowed': 'True', 'follows': '5',
+            'relation': 'python', 'waittime': '10', 'prevtweets': '3',
+            'mode': '0', 'senderrors': 'True', 'modular': 'False',
+            'follow_back': 'True', 'unfollow': 'True',
+            'tweet_like': 'True', 'follow_random': 'True',
+            'send_tweet': 'True', 'display_ver': 'False'
+        }
 
         # CREATE CONFIG IF DOESN'T EXIST
         if not os.path.exists('config.ini'):
@@ -50,7 +54,7 @@ class Main:
 
             for k, v in botconfig.items():
                 self.config['BotConfig'][k] = v
-            
+
             self.config['LoginData']['apikey'] = 'None'
             self.config['LoginData']['apisecretkey'] = 'None'
             self.config['LoginData']['accesstoken'] = 'None'
@@ -72,7 +76,6 @@ class Main:
         if self.CONFIG_CREATED:
             self.config.read('config.ini')
 
-    
     def set_config(self, parent, child, value):
 
         if self.CONFIG_CREATED:
@@ -80,17 +83,14 @@ class Main:
 
             with open('config.ini', 'w') as f:
                 self.config.write(f)
-                
         else:
             return
 
-    
     def set_vars(self):
 
-        
         if self.CONFIG_CREATED:
             # LADOWANIE WARTOSCI ZMIENNYCH ZAPISANYCH W CONFIGU JESLI ISTNIEJE
-            #Themes
+            # Themes
             self.themetab = [Fore.CYAN, Fore.BLUE, Fore.MAGENTA, Fore.WHITE]
             self.theme = self.themetab[self.config.getint('Theme', 'current')]
             # Help
@@ -102,30 +102,45 @@ class Main:
             self.co_ile = self.config.getint('BotConfig', 'howOften')
             self.karmienie = False
             self.ile_lajk = self.config.getint('BotConfig', 'likes')
-            self.reply_allow = self.config.getboolean('BotConfig', 'reply_allowed')
+            self.reply_allow = self.config.getboolean(
+                'BotConfig',
+                'reply_allowed'
+            )
             self.ile_follow = self.config.getint('BotConfig', 'follows')
             self.related_to = self.config.get('BotConfig', 'relation')
             self.wait_time_conv = self.config.get('BotConfig', 'waittime')
             self.prev_tweets_conv = self.config.get('BotConfig', 'prevtweets')
             self.mode = self.config.getint('BotConfig', 'mode')
-            self.send_errors = self.config.getboolean('BotConfig', 'senderrors')
+            self.send_errors = self.config.getboolean(
+                'BotConfig',
+                'senderrors'
+            )
             self.modular = self.config.getboolean('BotConfig', 'modular')
-            self.follow_back = self.config.getboolean('BotConfig', 'follow_back')
+            self.follow_back = self.config.getboolean(
+                'BotConfig',
+                'follow_back'
+            )
             self.unfollow = self.config.getboolean('BotConfig', 'unfollow')
             self.tweet_like = self.config.getboolean('BotConfig', 'tweet_like')
-            self.follow_random = self.config.getboolean('BotConfig', 'follow_random')
+            self.follow_random = self.config.getboolean(
+                'BotConfig',
+                'follow_random'
+            )
             self.tweet_send = self.config.getboolean('BotConfig', 'send_tweet')
-            self.DISPLAY_VER = self.config.getboolean('BotConfig', 'display_ver')
+            self.DISPLAY_VER = self.config.getboolean(
+                'BotConfig',
+                'display_ver'
+            )
             self.authtab = [
                 self.config.get('LoginData', 'apikey'),
                 self.config.get('LoginData', 'apisecretkey'),
                 self.config.get('LoginData', 'accesstoken'),
                 self.config.get('LoginData', 'accesstokensecret')
-                ]
-        
+            ]
+
         else:
             # DEFAULTOWE ZMIENNE, SA USTAWIANE PRZY TWORZENIU NOWEGO CONFIGU
-            #Themes
+            # Themes
             self.themetab = [Fore.CYAN, Fore.BLUE, Fore.MAGENTA, Fore.WHITE]
             self.theme = self.themetab[0]
             # Help
@@ -153,11 +168,13 @@ class Main:
             self.DISPLAY_VER = False
             self.authtab = []
 
-
     # DEFINIOWANIE FUNKCJI
     def authinput(self):
 
-        names = ['API key', 'API secret key', 'Access token', 'Access token secret']
+        names = [
+            'API key', 'API secret key',
+            'Access token', 'Access token secret'
+        ]
         authtable = []
         print(f'Please input your {self.theme}validation codes{Style.RESET_ALL}')
         print(f'(You can press {self.theme}ENTER{Style.RESET_ALL} if you don\'t have them)')
@@ -171,11 +188,10 @@ class Main:
         print('')
         return authtable
 
-
     def create_bot(self):
 
         try:
-            
+
             if self.authtab[0] == 'None':
                 # Tymczasowa tabelka zeby authtab[0] dalej rownalo sie 'None'
                 temp_tab = self.authinput()
@@ -184,9 +200,14 @@ class Main:
                 else:
                     # Jezeli cos zostalo wpisane w temp_tab to przypisz to do self.authtab
                     self.authtab = temp_tab
-            
-            self.t_bot = Twitterbot(self.authtab[0], self.authtab[1], self.authtab[2], self.authtab[3])
-            
+
+            self.t_bot = Twitterbot(
+                self.authtab[0],
+                self.authtab[1],
+                self.authtab[2],
+                self.authtab[3]
+            )
+
         except Exception:
             # print(f'{Fore.RED}Cannot create a Twitterbot object!{Style.RESET_ALL}')
             # input(f'\nPress {self.theme}ENTER{Style.RESET_ALL} to exit...')
@@ -196,7 +217,10 @@ class Main:
         else:
             # WPISZ KODY DOSTEPU DO CONFIGU
             if self.CONFIG_CREATED:
-                names = ['apikey', 'apisecretkey', 'accesstoken', 'accesstokensecret']
+                names = [
+                    'apikey', 'apisecretkey',
+                    'accesstoken', 'accesstokensecret'
+                ]
                 for index, name in enumerate(names):
                     self.config.set('LoginData', name, f'{self.authtab[index]}')
                 with open('config.ini', 'w') as f:
@@ -204,11 +228,18 @@ class Main:
             input(f'\nPress {self.theme}ENTER{Style.RESET_ALL} to continue...')
             return True
 
+    # def clock(self):
+
+    #     while True:
+    #         tm = datetime.datetime.now()
+    #         timeFormatted = tm.strftime("%d-%m-%Y %H:%M:%S")
+    #         print(timeFormatted, end="\r", flush=True)
+    #         time.sleep(1)
 
     def mainloop(self):
 
         os.system(self.what_os)
-        
+
         # WPISYWANIE KODOW DOSTEPU
         self.AUTHORIZED = self.create_bot()
 
@@ -242,7 +273,7 @@ class Main:
             if wybor == '1':
                 msg = 'How many tweets to post' if self.tweet_send or not self.modular else 'How many times to repeat the cycle'
                 while True:
-                    
+
                     fix = input(f'\n{msg}: ')
 
                     try:
@@ -261,14 +292,21 @@ class Main:
                             input(f'{Fore.RED}Couldn\'t authorize{Style.RESET_ALL}, press {self.theme}ENTER{Style.RESET_ALL} to try again...')
                         else:
                             break
-                
+
                 if self.mode == 0:
-                    driver = Driver(self.karmienie, self.co_ile, self.ile_lajk, self.related_to,
-                                    fix_int, self.ile_follow, self.text, self.image, self.wait_time_conv,
-                                    self.prev_tweets_conv, self.reply_allow, self.t_bot)
+                    driver = Driver(
+                        self.karmienie, self.co_ile, self.ile_lajk,
+                        self.related_to, fix_int, self.ile_follow, self.text,
+                        self.image, self.wait_time_conv,self.prev_tweets_conv,
+                        self.reply_allow, self.t_bot
+                    )
 
                     if self.modular:
-                        settings = [self.modular, self.follow_back, self.unfollow, self.tweet_like, self.follow_random, self.tweet_send]
+                        settings = [
+                            self.modular, self.follow_back,
+                            self.unfollow, self.tweet_like,
+                            self.follow_random, self.tweet_send
+                        ]
                         driver.modular_cycle(settings)
                     else:
                         settings = [True, True, True, True, True, True]
@@ -288,7 +326,7 @@ class Main:
                     print(f'\n|{self.theme}Bot setup{Style.RESET_ALL}:', end='\t\t\t')
                     print(f'|{self.theme}Customization{Style.RESET_ALL}:')
                     if self.AUTHORIZED:
-                        print('\n1. Scraper/Mode',end='\t\t\t')
+                        print('\n1. Scraper/Mode', end='\t\t\t')
                         print('7. Account settings')
                     else:
                         print('\n1. Scraper/Mode')
@@ -393,7 +431,6 @@ class Main:
                             elif wybor0 == '4':
                                 break
 
-
                     # HOW LONG TO WAIT BETWEEN TWEETS
                     elif wybor2 == '2':
 
@@ -417,7 +454,6 @@ class Main:
                                 time.sleep(1)
                                 break
 
-
                     # HOW MANY TWEETS TO LIKE
                     elif wybor2 == '3':
                         while True:
@@ -435,7 +471,7 @@ class Main:
                                 print('How many tweets to like')
                                 print(f'(RECOMMENDED: {self.theme}10{Style.RESET_ALL})')
                                 conv = input('\nInput a number: ')
-                                
+
                                 try:
                                     self.ile_lajk = int(conv)
 
@@ -464,12 +500,12 @@ class Main:
 
                                 print(f'\nReply functionality set to {self.theme}{self.reply_allow}{Style.RESET_ALL}')
                                 time.sleep(1)
-                                
+
                                 self.set_config('BotConfig', 'reply_allowed', f'{self.reply_allow}')
 
                             elif wybor5 == '3':
                                 break
-                    
+
                     # FOLLOW PEOPLE AND LIKE TWEETS RELATED TO
                     elif wybor2 == '4':
                         os.system(self.what_os)
@@ -537,7 +573,7 @@ class Main:
                                     self.set_config('BotConfig', 'waittime', f'{self.wait_time_conv}')
 
                                     time.sleep(1)
-                            
+
                             elif oth == '2':
                                 os.system(self.what_os)
                                 print('How many previous tweets to display')
@@ -557,7 +593,7 @@ class Main:
                                     print(f'\nBot will display {self.theme}{self.prev_tweets_conv}{Style.RESET_ALL} of your previous tweets!')
                                     # Save to config file
                                     self.set_config('BotConfig', 'prevtweets', f'{self.prev_tweets_conv}')
-                    
+
                                     time.sleep(1)
 
                             elif oth == '3':
@@ -593,7 +629,7 @@ class Main:
                                         print(f'6. Send new tweet ({self.theme}{self.tweet_send}{Style.RESET_ALL})')
                                     print('\n7. Go back')
                                     oth3 = input(f'\n{self.theme}Choice{Style.RESET_ALL}: ')
-                                    
+
                                     if oth3 == '1':
                                         os.system(self.what_os)
                                         print('Turn on or off')
@@ -608,7 +644,7 @@ class Main:
 
                                         print(f'\nModular settings set to {self.theme}{self.modular}{Style.RESET_ALL}!')
                                         time.sleep(1)
-                                        
+
                                         self.set_config('BotConfig', 'modular', f'{self.modular}')
 
                                     if oth3 == '2':
@@ -626,7 +662,7 @@ class Main:
 
                                             print(f'\nFollow back set to {self.theme}{self.follow_back}{Style.RESET_ALL}!')
                                             time.sleep(1)
-                                            
+
                                             self.set_config('BotConfig', 'follow_back', f'{self.follow_back}')
 
                                     if oth3 == '3':
@@ -644,7 +680,7 @@ class Main:
 
                                             print(f'\nUnfollow set to {self.theme}{self.unfollow}{Style.RESET_ALL}!')
                                             time.sleep(1)
-                                            
+
                                             self.set_config('BotConfig', 'unfollow', f'{self.unfollow}')
 
                                     if oth3 == '4':
@@ -804,8 +840,6 @@ class Main:
                                     os.system(self.what_os)
                                     print('Database contents')
                                     input('\nYour database is empty!')
-                                    
-                                    
 
                             elif oth == '7':
                                 break

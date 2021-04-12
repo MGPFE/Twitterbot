@@ -8,10 +8,9 @@ import os
 class Text_Scraper:
 
     def __init__(self):
-        
+
         self.var = 0
         self.real_list = []
-
 
     def scrape(self):
 
