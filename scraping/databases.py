@@ -56,7 +56,7 @@ class Db:
         self.c.execute("SELECT tweet FROM tweets")
         # nr = self.c.fetchone()
         # print(nr[0])
-        self.c.execute("DELETE FROM tweets WHERE tweet = (?)", (text, ))
+        self.c.execute("DELETE FROM tweets WHERE tweet = (?)", (text,))
         self.conn.commit()
 
 

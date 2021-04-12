@@ -84,9 +84,13 @@ class Twitterbot:
 
         # msg.add_attachment(file_data, maintype='textfile', subtype='txt', filename=file_name)
 
-        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
-            smtp.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
-            smtp.send_message(msg)
+        try:
+            with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+                smtp.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
+                smtp.send_message(msg)
+        except Exception as e:
+            print(e.reason)
+            input("Press anything to continue...")
 
     # Czas
     def what_time(self):
