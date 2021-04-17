@@ -16,9 +16,9 @@ class Main:
 
     def __init__(self):
         self.version = {
-            'ver': '1.3.7',
-            'date': '21.03.2021',
-            'time': '13:39'
+            'ver': '1.3.8',
+            'date': '17.04.2021',
+            'time': '19:32'
         }
         self.create_config()
         self.set_vars()
