@@ -28,12 +28,12 @@ class Twitterbot:
             wait_on_rate_limit=True,
             wait_on_rate_limit_notify=True
         )
+        self.get_access()
         # DEFINIUJEMY DWIE LISTY DO POZNIEJSZEGO UZYTKU
         # returned_list to lista osob ktore obserwujesz
         # returned_list2 to lista osob ktore obserwuja ciebie
         self.returned_list = self.check_who_you_follow()
         self.returned_list2 = self.check_who_follows_you()
-        self.get_access()
 
     def __str__(self):
 
