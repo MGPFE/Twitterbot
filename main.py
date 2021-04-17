@@ -18,16 +18,16 @@ class Main:
         self.version = {
             'ver': '1.3.8',
             'date': '17.04.2021',
-            'time': '19:32'
+            'time': '20:46'
         }
         self.create_config()
         self.set_vars()
 
         # USTALENIE SYSTEMU
         if sys.platform == 'linux':
-            self.what_os = 'clear'
+            self.clear = 'clear'
         elif sys.platform == 'win32':
-            self.what_os = 'CLS'
+            self.clear = 'CLS'
 
     def create_config(self):
         # CONFIG FILE
@@ -236,7 +236,7 @@ class Main:
 
     def mainloop(self):
 
-        os.system(self.what_os)
+        os.system(self.clear)
 
         # WPISYWANIE KODOW DOSTEPU
         self.AUTHORIZED = self.create_bot()
@@ -244,7 +244,7 @@ class Main:
         # MAINLOOP
         while True:
 
-            os.system(self.what_os)
+            os.system(self.clear)
 
             print(f'|{self.theme}Twitterbot{Style.RESET_ALL} {Fore.BLACK}{Style.BRIGHT}{self.version.get("ver")}{Style.RESET_ALL}') if self.DISPLAY_VER else print(f'|{self.theme}Twitterbot{Style.RESET_ALL}')
             print(f'|Connection status: {f"{Fore.GREEN}Connected{Style.RESET_ALL}" if self.AUTHORIZED else f"{Fore.RED}Not connected!{Style.RESET_ALL}"}')
@@ -295,7 +295,7 @@ class Main:
                     driver = Driver(
                         self.karmienie, self.co_ile, self.ile_lajk,
                         self.related_to, fix_int, self.ile_follow, self.text,
-                        self.image, self.wait_time_conv,self.prev_tweets_conv,
+                        self.image, self.wait_time_conv, self.prev_tweets_conv,
                         self.reply_allow, self.t_bot
                     )
 
@@ -318,7 +318,7 @@ class Main:
             # EDIT OPTIONS
             elif wybor == '2':
                 while True:
-                    os.system(self.what_os)
+                    os.system(self.clear)
 
                     print('Options ')
                     print(f'\n|{self.theme}Bot setup{Style.RESET_ALL}:', end='\t\t\t')
@@ -340,7 +340,7 @@ class Main:
                     # SCRAPER / MODE
                     if wybor2 == '1':
                         while True:
-                            os.system(self.what_os)
+                            os.system(self.clear)
 
                             print('Scraper/Mode settings')
                             print('\n1. Tweeting mode')
@@ -351,7 +351,7 @@ class Main:
 
                             # WHAT SCRAPER/MODE TO USE
                             if wybor0 == '1':
-                                os.system(self.what_os)
+                                os.system(self.clear)
 
                                 print('What scraper to use')
                                 print('\n1. Text scraper (One webpage only)')
@@ -388,7 +388,7 @@ class Main:
 
                             # FEED THE BOT
                             elif wybor0 == '2':
-                                os.system(self.what_os)
+                                os.system(self.clear)
 
                                 print('Do you want to scrape the web?')
                                 print('\n1. Yes')
@@ -407,7 +407,7 @@ class Main:
 
                             # CYCLE SETTINGS
                             elif wybor0 == '3':
-                                os.system(self.what_os)
+                                os.system(self.clear)
 
                                 print('Cycle settings')
                                 print('\n1. Regular mode')
@@ -431,7 +431,7 @@ class Main:
                     elif wybor2 == '2':
 
                         while True:
-                            os.system(self.what_os)
+                            os.system(self.clear)
                             print('How long to wait after the bot is done with it\'s procedures')
                             print(f'(RECOMMENDED: {self.theme}4h{Style.RESET_ALL})')
                             wybor4 = input('\nInput a number: ')
@@ -454,7 +454,7 @@ class Main:
                     elif wybor2 == '3':
                         while True:
 
-                            os.system(self.what_os)
+                            os.system(self.clear)
 
                             print('Tweet/DM settings')
                             print('\n1. How many tweets to like')
@@ -463,7 +463,7 @@ class Main:
                             wybor5 = input(f'\n{self.theme}Choice{Style.RESET_ALL}: ')
 
                             if wybor5 == '1':
-                                os.system(self.what_os)
+                                os.system(self.clear)
                                 print('How many tweets to like')
                                 print(f'(RECOMMENDED: {self.theme}10{Style.RESET_ALL})')
                                 conv = input('\nInput a number: ')
@@ -483,7 +483,7 @@ class Main:
                                     time.sleep(1)
 
                             elif wybor5 == '2':
-                                os.system(self.what_os)
+                                os.system(self.clear)
                                 print('Reply to tweets/DM\'s')
                                 print('\n1. True')
                                 print('2. False')
@@ -504,7 +504,7 @@ class Main:
 
                     # FOLLOW PEOPLE AND LIKE TWEETS RELATED TO
                     elif wybor2 == '4':
-                        os.system(self.what_os)
+                        os.system(self.clear)
 
                         print('Set relations')
                         self.related_to = input('\nFollow people and like tweets related to: ')
@@ -519,7 +519,7 @@ class Main:
                     elif wybor2 == '5':
                         while True:
 
-                            os.system(self.what_os)
+                            os.system(self.clear)
 
                             print('How many users to follow')
                             print(f'(RECOMMENDED: {self.theme}5{Style.RESET_ALL})')
@@ -542,7 +542,7 @@ class Main:
 
                     elif wybor2 == '6':
                         while True:
-                            os.system(self.what_os)
+                            os.system(self.clear)
                             print('Other')
                             print('\n1. How long to wait between likes/follows')
                             print('2. How many previous tweets to display')
@@ -554,7 +554,7 @@ class Main:
                             oth = input(f'\n{self.theme}Choice{Style.RESET_ALL}: ')
 
                             if oth == '1':
-                                os.system(self.what_os)
+                                os.system(self.clear)
                                 print('How long to wait between likes/follows etc.')
                                 print(f'(RECOMMENDED: {self.theme}10{Style.RESET_ALL} seconds)')
                                 wait_time = input('\nInput a number: ')
@@ -571,7 +571,7 @@ class Main:
                                     time.sleep(1)
 
                             elif oth == '2':
-                                os.system(self.what_os)
+                                os.system(self.clear)
                                 print('How many previous tweets to display')
                                 print(f'(RECOMMENDED: {self.theme}3{Style.RESET_ALL})')
                                 prev_tweets = input('\nInput a number: ')
@@ -593,7 +593,7 @@ class Main:
                                     time.sleep(1)
 
                             elif oth == '3':
-                                os.system(self.what_os)
+                                os.system(self.clear)
                                 print('Send error data')
                                 print(f'(RECOMMENDED: {self.theme}TRUE{Style.RESET_ALL})')
                                 print('\n1. True')
@@ -613,7 +613,7 @@ class Main:
 
                             elif oth == '4':
                                 while True:
-                                    os.system(self.what_os)
+                                    os.system(self.clear)
 
                                     print('Modular settings')
                                     print(f'\n1. Turned on ({self.theme}{self.modular}{Style.RESET_ALL})')
@@ -627,7 +627,7 @@ class Main:
                                     oth3 = input(f'\n{self.theme}Choice{Style.RESET_ALL}: ')
 
                                     if oth3 == '1':
-                                        os.system(self.what_os)
+                                        os.system(self.clear)
                                         print('Turn on or off')
                                         print('\n1. On')
                                         print('2. Off')
@@ -645,7 +645,7 @@ class Main:
 
                                     if oth3 == '2':
                                         if self.modular:
-                                            os.system(self.what_os)
+                                            os.system(self.clear)
                                             print('Follow back your followers')
                                             print('\n1. True')
                                             print('2. False')
@@ -663,7 +663,7 @@ class Main:
 
                                     if oth3 == '3':
                                         if self.modular:
-                                            os.system(self.what_os)
+                                            os.system(self.clear)
                                             print('Unfollow people that are not following you')
                                             print('\n1. True')
                                             print('2. False')
@@ -681,7 +681,7 @@ class Main:
 
                                     if oth3 == '4':
                                         if self.modular:
-                                            os.system(self.what_os)
+                                            os.system(self.clear)
                                             print('Like random tweets')
                                             print('\n1. True')
                                             print('2. False')
@@ -699,7 +699,7 @@ class Main:
 
                                     if oth3 == '5':
                                         if self.modular:
-                                            os.system(self.what_os)
+                                            os.system(self.clear)
                                             print('Follow random people')
                                             print('\n1. True')
                                             print('2. False')
@@ -717,7 +717,7 @@ class Main:
 
                                     if oth3 == '6':
                                         if self.modular:
-                                            os.system(self.what_os)
+                                            os.system(self.clear)
                                             print('Send new tweet')
                                             print('\n1. True')
                                             print('2. False')
@@ -737,7 +737,7 @@ class Main:
                                         break
                             
                             elif oth == '5':
-                                os.system(self.what_os)
+                                os.system(self.clear)
                                 print('Bot info')
                                 if self.AUTHORIZED:
                                     print(self.t_bot)
@@ -751,12 +751,12 @@ class Main:
                                     if oth2 == '1':
                                         print('\nYou will be relogged!')
                                         time.sleep(1)
-                                        os.system(self.what_os)
+                                        os.system(self.clear)
                                         self.authtab[0] = 'None'
                                         self.create_bot()
                                     
                                     elif oth2 == '2':
-                                        os.system(self.what_os)
+                                        os.system(self.clear)
                                         print('Display Twitterbot version on main screen')
                                         print('\n1. True')
                                         print('2. False')
@@ -781,7 +781,7 @@ class Main:
                                     oth3 = input(f'\n{self.theme}Choice{Style.RESET_ALL}: ')
 
                                     if oth3 == '1':
-                                        os.system(self.what_os)
+                                        os.system(self.clear)
                                         print('Display Twitterbot version on main screen')
                                         print('\n1. True')
                                         print('2. False')
@@ -803,39 +803,64 @@ class Main:
 
                                 data = Db()
                                 data.create_table()
-                                if data.count_entries() != 0:
-                                    tweets = data.fetch()
 
-                                    for index in range(data.count_entries()):
-                                        os.system(self.what_os)
-                                        print('Database contents')
-                                        print(f'(click {self.theme}ENTER{Style.RESET_ALL} to view next one, type {self.theme}EXIT{Style.RESET_ALL} to go back or {self.theme}D{Style.RESET_ALL} to delete record)\n')
-            
-                                        tweet = tweets[index]
-                                        print(f'({self.theme}{(index + 1)}{Style.RESET_ALL} / {len(tweets)})')
-                                        print(f'{tweet[0]}')
+                                os.system(self.clear)
+                                print("Database options")
+                                print("\nDo you wish to view your database contents or add to it?")
 
-                                        decision = input(f'\n{self.theme}Choice{Style.RESET_ALL}: ')
-                                        actual_decision = decision.upper()
+                                inp = input(f"Type {Fore.CYAN}VIEW{Style.RESET_ALL} or {Fore.CYAN}ADD{Style.RESET_ALL}: ").lower()
+                                if inp == "view":
+                                    if data.count_entries() != 0:
+                                        tweets = data.fetch()
 
-                                        if actual_decision == '':
-                                            continue
-                                        elif actual_decision == 'D':
-                                            sure = input(f'{Fore.YELLOW}Are you sure? (Y/n): {Style.RESET_ALL}')
-                                            actual_sure = sure.upper()
-                                            if actual_sure == 'Y' or actual_sure == '':
-                                                data.delete(tweet[0])
+                                        for index in range(data.count_entries()):
+                                            os.system(self.clear)
+                                            print('Database contents')
+                                            print(f'(click {self.theme}ENTER{Style.RESET_ALL} to view next one, type {self.theme}EXIT{Style.RESET_ALL} to go back or {self.theme}D{Style.RESET_ALL} to delete record)\n')
+                
+                                            tweet = tweets[index]
+                                            print(f'({self.theme}{(index + 1)}{Style.RESET_ALL} / {len(tweets)})')
+                                            print(f'{tweet[0]}')
+
+                                            decision = input(f'\n{self.theme}Choice{Style.RESET_ALL}: ')
+                                            actual_decision = decision.upper()
+
+                                            if actual_decision == '':
+                                                continue
+                                            elif actual_decision == 'D':
+                                                sure = input(f'{Fore.YELLOW}Are you sure? (Y/n): {Style.RESET_ALL}')
+                                                actual_sure = sure.upper()
+                                                if actual_sure == 'Y' or actual_sure == '':
+                                                    data.delete(tweet[0])
+                                                else:
+                                                    pass
+                                            elif actual_decision == 'EXIT':
+                                                break
                                             else:
-                                                pass
-                                        elif actual_decision == 'EXIT':
-                                            break
-                                        else:
-                                            continue
+                                                continue
 
-                                else:
-                                    os.system(self.what_os)
-                                    print('Database contents')
-                                    input('\nYour database is empty!')
+                                    else:
+                                        os.system(self.clear)
+                                        print('Database contents')
+                                        input('\nYour database is empty!')
+
+                                elif inp == "add":
+                                    os.system(self.clear)
+                                    print("Add to database")
+                                    new_entry = input("\nNew entry: ")
+
+                                    if new_entry:
+                                        while True:
+                                            decision = input(f'\nDo you wish to add it? ({Fore.CYAN}Y{Style.RESET_ALL}/n): ').lower()
+                                            if decision == 'y' or decision == '':
+                                                data.new_entry(new_entry)
+                                                break
+                                            elif decision == 'n':
+                                                print('')
+                                                break
+                                    else:
+                                        print(f"\n{Fore.YELLOW}You didn't type anything!{Style.RESET_ALL}")
+                                        time.sleep(1)
 
                             elif oth == '7':
                                 break
@@ -845,7 +870,7 @@ class Main:
                     elif wybor2 == '7':
                         if self.AUTHORIZED:
                             while True:
-                                os.system(self.what_os)
+                                os.system(self.clear)
                                 print('Account settings')
                                 print('\n1. Set profile picture')
                                 print('2. Set background image')
@@ -855,7 +880,7 @@ class Main:
 
                                 # ACCOUNT SETTINGS / SET PROFILE PIC
                                 if wybor8 == '1':
-                                    os.system(self.what_os)
+                                    os.system(self.clear)
                                     print('Set profile picture')
                                     p_img = input('\nPlease input a name of your file: ')
                                     if p_img == '':
@@ -865,7 +890,7 @@ class Main:
 
                                 elif wybor8 == '2':
                                     # ACCOUNT SETTINGS / SET BACKGROUND IMAGE
-                                    os.system(self.what_os)
+                                    os.system(self.clear)
                                     print('Set background image')
                                     b_img = input('\nPlease input a name of your file: ')
                                     if b_img == '':
@@ -875,7 +900,7 @@ class Main:
 
                                 elif wybor8 == '3':
                                     # ACCOUNT SETTINGS / UPDATE PROFILE
-                                    os.system(self.what_os)
+                                    os.system(self.clear)
                                     print('Update profile')
                                     print('\n1. Name')
                                     print('2. Location')
@@ -884,7 +909,7 @@ class Main:
 
                                     # UPDATE PROFILE / NAME
                                     if wybor9 == '1':
-                                        os.system(self.what_os)
+                                        os.system(self.clear)
                                         print('Change name')
                                         new_name = input('\nInput your new profile name: ')
                                         if new_name == '':
@@ -900,7 +925,7 @@ class Main:
 
                                     # UPDATE PROFILE / LOCATION
                                     elif wybor9 == '2':
-                                        os.system(self.what_os)
+                                        os.system(self.clear)
                                         print('Change location')
                                         new_loc = input('\nInput your new location: ')
                                         if new_loc == '':
@@ -916,7 +941,7 @@ class Main:
 
                                     # UPDATE PROFILE / DESCRIPTION
                                     elif wybor9 == '3':
-                                        os.system(self.what_os)
+                                        os.system(self.clear)
                                         print('Change description')
                                         new_desc = input('\nInput your new description: ')
                                         if new_desc == '':
@@ -935,7 +960,7 @@ class Main:
 
                     # MAIN MENU THEME
                     elif wybor2 == '8':
-                        os.system(self.what_os)
+                        os.system(self.clear)
                         print('Main menu theme')
                         print(f'\n1. Cyan {Fore.CYAN}//////{Style.RESET_ALL}')
                         print(f'2. Blue {Fore.BLUE}//////{Style.RESET_ALL}')

@@ -31,6 +31,11 @@ class Driver:
         self.bot = bot
         self.i = 0
 
+        if sys.platform == "win32":
+            self.clear = "CLS"
+        else:
+            self.clear = "clear"
+
     def wait(self):
 
         after = (self.co_il / 60) / 60
@@ -66,14 +71,14 @@ class Driver:
 
         # Ladowanie postow do tabeli
             # try:
-            how_many = self.db.count_entries()
+            self.how_many = self.db.count_entries()
 
-            if how_many == 0:
+            if self.how_many == 0:
                 print('\nDatabase is empty!')
                 input(f'Press {Fore.CYAN}ENTER{Style.RESET_ALL} to return to main menu...')
                 return False
             else:
-                print(f'\nBot has {Fore.CYAN}{str(how_many)}{Style.RESET_ALL} posts in the database')
+                print(f'\nBot has {Fore.CYAN}{str(self.how_many)}{Style.RESET_ALL} posts in the database')
                 try:
                     self.posty = self.db.fetch()
                 except Exception as err:
@@ -154,8 +159,27 @@ class Driver:
                     sys.exit()
 
                 if self.txt:
-                    current_twt = self.posty[self.i][0]
-                    print(f'\n{Fore.CYAN}Next tweet{Style.RESET_ALL}: {current_twt}')
+                    print("\nDo you want to send your own tweet or fetch some from the database?")
+                    inp = input(f"Type {Fore.CYAN}OWN{Style.RESET_ALL} to send your own tweet: ").lower()
+                    if inp == "own":
+                        while True:
+                            os.system(self.clear)
+                            print("Please input your own tweet")
+                            current_twt = input("\nInput your tweet: ")
+                            if current_twt:
+                                break
+                            else:
+                                input(f"\n{Fore.YELLOW}Type something!{Style.RESET_ALL}")
+                    else:
+                        for index, post in enumerate(self.posty, 1):
+                            os.system(self.clear)
+                            print("Pick a tweet to send")
+                            print(f'\n{Fore.CYAN}Next tweet{Style.RESET_ALL}({index}/{self.how_many}): {post[0]}')
+                            dec = input(f"\nType {Fore.CYAN}SEND{Style.RESET_ALL} to send it or press {Fore.CYAN}ENTER{Style.RESET_ALL} for next one: ").lower()
+                            if dec == "send":
+                                current_twt = post[0]
+                                break
+
                     while True:
                         decision = input(f'\nDo you wish to send it? ({Fore.CYAN}Y{Style.RESET_ALL}/n): ')
                         actual_decision = decision.upper()

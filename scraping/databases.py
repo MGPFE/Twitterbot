@@ -37,6 +37,11 @@ class Db:
         pbar.close()
         print('Done!\n')
 
+    def new_entry(self, entry):
+
+        self.c.execute("INSERT INTO tweets VALUES (?)", (entry,))
+        self.conn.commit()
+
     def fetch(self):
 
         self.c.execute("SELECT * FROM tweets")
