@@ -3,8 +3,6 @@ from configparser import ConfigParser
 from api.twitterbot import Twitterbot
 from api.driver import Driver
 from scraping.databases import Db
-import threading
-import datetime
 import platform
 import time
 import sys
@@ -313,7 +311,7 @@ class Main:
                         driver.default_cycle(settings)
 
                 # elif self.mode == 1:
-                #     driver = Driver(self.karmienie, self.co_ile, None, self.related_to, 
+                #     driver = Driver(self.karmienie, self.co_ile, None, self.related_to,
                 #                     None, self.ile_follow, self.text, self.image, self.t_bot)
                 #     driver.infinite_mode()
 
@@ -346,7 +344,7 @@ class Main:
 
                             print('Scraper/Mode settings')
                             print('\n1. Tweeting mode')
-                            print('2. Feed the bot')
+                            print('2. Scrape the web')
                             print('3. Cycle settings')
                             print('\n4. Go back')
                             wybor0 = input(f'\n{self.theme}Choice{Style.RESET_ALL}: ')
@@ -392,22 +390,20 @@ class Main:
                             elif wybor0 == '2':
                                 os.system(self.what_os)
 
-                                print('Feed the bot')
+                                print('Do you want to scrape the web?')
                                 print('\n1. Yes')
                                 print('2. No')
                                 wybor3 = input(f'\n{self.theme}Choice{Style.RESET_ALL}: ')
 
                                 # YES
                                 if wybor3 == '1':
-                                    print('\nBot will be fed!')
+                                    print('\nBot will scrape the web during runtime!')
                                     self.karmienie = True
                                     time.sleep(1)
 
                                 # NO
                                 elif wybor3 == '2':
-                                    print('\nBot will not be fed!')
                                     self.karmienie = False
-                                    time.sleep(1)
 
                             # CYCLE SETTINGS
                             elif wybor0 == '3':
@@ -698,7 +694,7 @@ class Main:
 
                                             print(f'\nLike random tweets set to {self.theme}{self.tweet_like}{Style.RESET_ALL}!')
                                             time.sleep(1)
-                                            
+
                                             self.set_config('BotConfig', 'tweet_like', f'{self.tweet_like}')
 
                                     if oth3 == '5':
@@ -716,7 +712,7 @@ class Main:
 
                                             print(f'\nUnfollow set to {self.theme}{self.follow_random}{Style.RESET_ALL}!')
                                             time.sleep(1)
-                                            
+
                                             self.set_config('BotConfig', 'follow_random', f'{self.follow_random}')
 
                                     if oth3 == '6':

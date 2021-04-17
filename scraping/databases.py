@@ -1,4 +1,4 @@
-from scraping.feed import Text_Scraper
+from scraping.text_scraper import Text_Scraper
 from tqdm import tqdm
 import sqlite3
 
@@ -25,12 +25,12 @@ class Db:
     def insert(self):
 
         scraper = Text_Scraper()
-        my_list = scraper.foodforbot()
-        list_length = len(my_list)
+        my_set = scraper.run_scraper()
+        set_length = len(my_set)
         print('\nInserting data into database...')
-        pbar = tqdm(total=list_length)
-        for tw in range(list_length):
-            self.c.execute("INSERT INTO tweets VALUES (?)", [my_list[tw]])
+        pbar = tqdm(total=set_length)
+        for i in range(set_length):
+            self.c.execute("INSERT INTO tweets VALUES (?)", (my_set.pop(),))
             self.conn.commit()
             pbar.update(1)
 

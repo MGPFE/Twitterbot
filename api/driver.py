@@ -17,7 +17,6 @@ class Driver:
         s_fix, ile_foll, txt, img, wait_time,
         prev_tweets, reply_allow, bot
     ):
-
         self.karm = karm
         self.co_il = co_il
         self.ile_l = ile_l
@@ -61,7 +60,7 @@ class Driver:
             if self.karm:
                 self.db.create_table()
                 self.db.insert()
-                print("Bot fed!")
+                print("Database populated!")
             else:
                 self.db.create_table()
 
@@ -201,7 +200,7 @@ class Driver:
                 else:
                     print('\n')
 
-                print("I ran out of tweets, feed me!")
+                print("Bot ran out of tweets, run a scraper!")
                 input(f'\nPress {Fore.CYAN}ENTER{Style.RESET_ALL} to exit...')
                 sys.exit()
 
