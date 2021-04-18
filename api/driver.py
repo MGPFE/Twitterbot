@@ -39,21 +39,21 @@ class Driver:
     def wait(self):
 
         after = (self.co_il / 60) / 60
-        print(f'{Fore.CYAN}{self.bot.what_time()}{Style.RESET_ALL} -- Next action in {Fore.CYAN}{str(int(after))}{Style.RESET_ALL} hour/s! ({Fore.CYAN}{str(self.i)}{Style.RESET_ALL} tweet/s sent!)\n')
+        print(f"{Fore.CYAN}{self.bot.what_time()}{Style.RESET_ALL} -- Next action in {Fore.CYAN}{str(int(after))}{Style.RESET_ALL} hour/s! ({Fore.CYAN}{str(self.i)}{Style.RESET_ALL} tweet/s sent!)\n")
         time.sleep(self.co_il)
 
     def prnt_timeline(self):
 
         twts = self.bot.check_timeline(self.prev_tweets)
         for key, value in twts.items():
-            if key == 'username':
+            if key == "username":
                 pass
             else:
-                print('')
+                print("")
                 print(f"{Fore.CYAN}{twts['username']}{Style.RESET_ALL}:")
                 print(value)
 
-        input(f'\nPress {Fore.CYAN}ENTER{Style.RESET_ALL} to continue...')
+        input(f"\nPress {Fore.CYAN}ENTER{Style.RESET_ALL} to continue...")
 
     def load_database(self):
 
@@ -74,15 +74,15 @@ class Driver:
             self.how_many = self.db.count_entries()
 
             if self.how_many == 0:
-                print('\nDatabase is empty!')
-                input(f'Press {Fore.CYAN}ENTER{Style.RESET_ALL} to return to main menu...')
+                print("\nDatabase is empty!")
+                input(f"Press {Fore.CYAN}ENTER{Style.RESET_ALL} to return to main menu...")
                 return False
             else:
-                print(f'\nBot has {Fore.CYAN}{str(self.how_many)}{Style.RESET_ALL} posts in the database')
+                print(f"\nBot has {Fore.CYAN}{str(self.how_many)}{Style.RESET_ALL} posts in the database")
                 try:
                     self.posty = self.db.fetch()
                 except Exception as err:
-                    print(f'{Fore.YELLOW}{err}{Style.RESET_ALL}')
+                    print(f"{Fore.YELLOW}{err}{Style.RESET_ALL}")
                     return False
                 else:
                     return True
@@ -94,17 +94,17 @@ class Driver:
             # DEFINIOWANIE SCRAPERA OBRAZOW
             self.img_scraper = Image_Scraper()
             if self.karm:
-                web_page = input('\nPlease input a link for images: ')
+                web_page = input("\nPlease input a link for images: ")
                 self.img_scraper.foodforbot(web_page)
 
             else:
                 try:
-                    os.chdir('Files')
+                    os.chdir("Files")
                 except FileNotFoundError:
-                    print(f'{Fore.YELLOW}\nYou don\'t have any images!{Style.RESET_ALL}')
+                    print(f"{Fore.YELLOW}\nYou don\'t have any images!{Style.RESET_ALL}")
                     return False
                 else:
-                    self.filenames = [name for name in os.listdir('.') if os.path.isfile(name)]
+                    self.filenames = [name for name in os.listdir(".") if os.path.isfile(name)]
                     return True
         ###############################################################
 
@@ -143,19 +143,19 @@ class Driver:
 
     def post_tweet(self, add_funcs):
 
-        # Postowanie i like'owanie tweetow
+        # Postowanie i like"owanie tweetow
         while self.i <= self.s_fix:          # bylo len(posty)
             try:
                 if self.i == self.s_fix:
                     if self.txt:
                         self.db.close_db()
-                        print('\nDatabase closed!')
+                        print("\nDatabase closed!")
 
                     else:
-                        print('')
+                        print("")
 
-                    print('Done!')
-                    input(f'\nPress {Fore.CYAN}ENTER{Style.RESET_ALL} to exit...')
+                    print("Done!")
+                    input(f"\nPress {Fore.CYAN}ENTER{Style.RESET_ALL} to exit...")
                     sys.exit()
 
                 if self.txt:
@@ -174,21 +174,21 @@ class Driver:
                         for index, post in enumerate(self.posty, 1):
                             os.system(self.clear)
                             print("Pick a tweet to send")
-                            print(f'\n{Fore.CYAN}Next tweet{Style.RESET_ALL}({index}/{self.how_many}): {post[0]}')
+                            print(f"\n{Fore.CYAN}Next tweet{Style.RESET_ALL}({index}/{self.how_many}): {post[0]}")
                             dec = input(f"\nType {Fore.CYAN}SEND{Style.RESET_ALL} to send it or press {Fore.CYAN}ENTER{Style.RESET_ALL} for next one: ").lower()
                             if dec == "send":
                                 current_twt = post[0]
                                 break
 
                     while True:
-                        decision = input(f'\nDo you wish to send it? ({Fore.CYAN}Y{Style.RESET_ALL}/n): ')
+                        decision = input(f"\nDo you wish to send it? ({Fore.CYAN}Y{Style.RESET_ALL}/n): ")
                         actual_decision = decision.upper()
-                        if actual_decision == 'Y' or actual_decision == '':
+                        if actual_decision == "Y" or actual_decision == "":
                             sent = self.bot.post_tweet(current_twt, self.img, self.i)
                             break
-                        elif actual_decision == 'N':
+                        elif actual_decision == "N":
                             sent = False
-                            print('')
+                            print("")
                             break
 
                 elif self.img:
@@ -207,36 +207,36 @@ class Driver:
                         self.db.delete(current_twt)
 
                     elif self.img:
-                        self.img_scraper.delete_file(self.filenames[self.i-1])
+                        self.img_scraper.delete_file(self.filenames[self.i - 1])
 
                 if add_funcs[0]:
                     self.run_threads(add_funcs)
 
                 if self.s_fix > 1:
-                    print('\nThe bot is in standby mode!')
+                    print("\nThe bot is in standby mode!")
                     t0.join()
 
             except IndexError:
                 if self.txt:
                     self.db.close_db()
-                    print('\nDatabase closed!')
+                    print("\nDatabase closed!")
 
                 else:
-                    print('\n')
+                    print("\n")
 
                 print("Bot ran out of tweets, run a scraper!")
-                input(f'\nPress {Fore.CYAN}ENTER{Style.RESET_ALL} to exit...')
+                input(f"\nPress {Fore.CYAN}ENTER{Style.RESET_ALL} to exit...")
                 sys.exit()
 
             except KeyboardInterrupt:
                 if self.txt:
                     self.db.close_db()
-                    print('\nDatabase closed!')
+                    print("\nDatabase closed!")
 
                 else:
-                    print('\n')
+                    print("\n")
 
-                input(f'\nPress {Fore.CYAN}ENTER{Style.RESET_ALL} to exit...')
+                input(f"\nPress {Fore.CYAN}ENTER{Style.RESET_ALL} to exit...")
                 sys.exit()
 
     def modular_cycle(self, sett):
@@ -246,7 +246,7 @@ class Driver:
             DB_FLAG = self.load_database()
 
             if DB_FLAG:
-                print(f'{Fore.YELLOW}\nWARNING! it is recommended NOT to close the bot manually!{Style.RESET_ALL}')
+                print(f"{Fore.YELLOW}\nWARNING! it is recommended NOT to close the bot manually!{Style.RESET_ALL}")
                 self.prnt_timeline()
 
                 self.post_tweet(sett)
@@ -255,10 +255,10 @@ class Driver:
         else:
             self.prnt_timeline()
             while self.i <= self.s_fix:
-                print('')
+                print("")
                 if self.s_fix == self.i:
-                    print('Done!')
-                    input(f'\nPress {Fore.CYAN}ENTER{Style.RESET_ALL} to exit...')
+                    print("Done!")
+                    input(f"\nPress {Fore.CYAN}ENTER{Style.RESET_ALL} to exit...")
                     sys.exit()
 
                 if self.s_fix > 1:
@@ -269,7 +269,7 @@ class Driver:
                 self.i += 1
 
                 if self.s_fix > 1:
-                    print('\nThe bot is in standby mode!')
+                    print("\nThe bot is in standby mode!")
                     t0.join()
 
     def default_cycle(self, sett):
@@ -277,7 +277,7 @@ class Driver:
         DB_FLAG = self.load_database()
 
         if DB_FLAG:
-            print(f'{Fore.YELLOW}\nWARNING! it is recommended NOT to close the bot manually!{Style.RESET_ALL}')
+            print(f"{Fore.YELLOW}\nWARNING! it is recommended NOT to close the bot manually!{Style.RESET_ALL}")
             self.prnt_timeline()
 
             self.post_tweet(sett)
@@ -285,7 +285,7 @@ class Driver:
             return
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     driver = Driver(
         None, None, None, None,

@@ -7,7 +7,7 @@ class Db:
 
     def __init__(self):
 
-        self.conn = sqlite3.connect('tweet.db')
+        self.conn = sqlite3.connect("tweet.db")
         self.c = self.conn.cursor()
         self.create_table()
 
@@ -27,7 +27,7 @@ class Db:
         scraper = Text_Scraper()
         my_set = scraper.run_scraper()
         set_length = len(my_set)
-        print('\nInserting data into database...')
+        print("\nInserting data into database...")
         pbar = tqdm(total=set_length)
         for i in range(set_length):
             self.c.execute("INSERT INTO tweets VALUES (?)", (my_set.pop(),))
@@ -35,7 +35,7 @@ class Db:
             pbar.update(1)
 
         pbar.close()
-        print('Done!\n')
+        print("Done!\n")
 
     def new_entry(self, entry):
 
@@ -69,7 +69,7 @@ class Db:
 
 #     def __init__(self):
 
-#         self.conn = sqlite3.connect('tweet.db', check_same_thread=False)
+#         self.conn = sqlite3.connect("tweet.db", check_same_thread=False)
 #         self.c = self.conn.cursor()
 
 #     def create_table(self):

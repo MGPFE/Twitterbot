@@ -15,31 +15,31 @@ class Text_Scraper:
 
         self.var += 1
 
-        URL = (f'https://www.brainyquote.com/topics/daily-quotes_{str(self.var)}')
+        URL = (f"https://www.brainyquote.com/topics/daily-quotes_{str(self.var)}")
 
         page = requests.get(URL)
 
-        soup = BeautifulSoup(page.content, 'html.parser')
+        soup = BeautifulSoup(page.content, "html.parser")
 
-        container = soup.find('div', id='quotesList')
+        container = soup.find("div", id="quotesList")
 
-        everything = container.find_all('div', class_='m-brick')
+        everything = container.find_all("div", class_="m-brick")
 
         for item in everything:
             if item.find(class_="clearfix"):
-                raw_string = item.find(class_='clearfix')
-                formatted_string = raw_string.text.strip().replace('\n', '~')
-                quote_ready = formatted_string.split('~')
+                raw_string = item.find(class_="clearfix")
+                formatted_string = raw_string.text.strip().replace("\n", "~")
+                quote_ready = formatted_string.split("~")
                 if len(formatted_string) > 250:
                     continue
                 else:
-                    self.quotes_set.add(f'#motivation #quotes "{quote_ready[0]}" ~{quote_ready[1]}')
+                    self.quotes_set.add(f"#motivation #quotes '{quote_ready[0]}' ~{quote_ready[1]}")
 
         self.pbar.update(1)
 
     def run_scraper(self):
 
-        print('\nScraping...')
+        print("\nScraping...")
         self.pbar = tqdm(total=39)
 
         threads = []
@@ -52,5 +52,5 @@ class Text_Scraper:
             thread.join()
 
         self.pbar.close()
-        print('Done!')
+        print("Done!")
         return self.quotes_set
