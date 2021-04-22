@@ -34,13 +34,9 @@ class Image_Scraper:
 
     def download_image(self, URL, file_name):
 
-        # print(str(file_name) + ". Starting a thread")
-
         r = requests.get(URL)
         im = Image.open(BytesIO(r.content))
         im.save(str(file_name) + ".jpg")
-
-        # print(str(file_name) + ". Done!")
 
     def foodforbot(self, page):
 
@@ -89,7 +85,6 @@ class Image_Scraper:
                 t.start()
                 threads.append(t)
             except Exception as e:
-                # print(e)
                 pass
             self.i += 1
 

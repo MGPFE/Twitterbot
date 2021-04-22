@@ -58,10 +58,10 @@ class Driver:
     def load_database(self):
 
         if self.txt:
-            # Dla wstawiania tekstu
+            # WHEN TEXT SCRAPER IS ACTIVE
             self.db = Db()
         ###############################################################
-        # Pobieranie postow
+        # GET POSTS FROM DATABASE
             if self.karm:
                 self.db.create_table()
                 self.db.insert()
@@ -69,8 +69,7 @@ class Driver:
             else:
                 self.db.create_table()
 
-        # Ladowanie postow do tabeli
-            # try:
+        # INSERT POSTS INTO A LIST
             self.how_many = self.db.count_entries()
 
             if self.how_many == 0:
@@ -88,10 +87,10 @@ class Driver:
                     return True
         ###############################################################
 
-        # Dla wstawiania samego obrazu
+        # WHEN IMAGE SCRAPER IS ACTIVE
         ###############################################################
         elif self.img:
-            # DEFINIOWANIE SCRAPERA OBRAZOW
+            # CREATE AN INSTANCE OF IMAGE SCRAPER
             self.img_scraper = Image_Scraper()
             if self.karm:
                 web_page = input("\nPlease input a link for images: ")
@@ -111,14 +110,14 @@ class Driver:
     def run_threads(self, a_funcs):
 
         threads = [
-            threading.Thread(target=self.bot.follow_back, args=(self.wait_time,)) if a_funcs[1] else None,  # Zaobserwuj followersow
-            threading.Thread(target=self.bot.unfollow_v2, args=(self.wait_time,)) if a_funcs[2] else None,  # Odfollowuj osoby ktore cie nie obserwuja
+            threading.Thread(target=self.bot.follow_back, args=(self.wait_time,)) if a_funcs[1] else None,  # FOLLOW BACK FOLLOWERS
+            threading.Thread(target=self.bot.unfollow_v2, args=(self.wait_time,)) if a_funcs[2] else None,  # UNFOLLOW USERS THAT DON'T FOLLOW YOU
             threading.Thread(target=self.bot.tweet_like, args=(
                 self.ile_l,
                 self.related,
                 self.wait_time,
                 self.allow_reply,
-            )) if a_funcs[3] else None  # Lajkowanie tweetow tweetow (ile tweetow ma polajkowac, co ile sekund)
+            )) if a_funcs[3] else None  # LIKE TWEETS
         ]
 
         for thread in threads:
@@ -129,7 +128,7 @@ class Driver:
             if thread is not None:
                 thread.join()
 
-        # Zaobserwuj losowych uzytkownikow
+        # FOLLOW RANDOM USERS
         if a_funcs[4]:
             t4 = threading.Thread(target=self.bot.follow_random, args=(
                 self.related,
@@ -143,8 +142,8 @@ class Driver:
 
     def post_tweet(self, add_funcs):
 
-        # Postowanie i like"owanie tweetow
-        while self.i <= self.s_fix:          # bylo len(posty)
+        # POST AND LIKE TWEETS
+        while self.i <= self.s_fix:
             try:
                 if self.i == self.s_fix:
                     if self.txt:
@@ -196,13 +195,13 @@ class Driver:
 
                 self.i += 1
 
-                # W przypadku postowania wiecej niz jednego tweeta
+                # IF MORE THAN ONE TWEET TO POST
                 if self.s_fix > 1:
                     t0 = threading.Thread(target=self.wait)
                     t0.start()
 
                 if sent:
-                    # Usuń użytego posta z bazy danych
+                    # DELETE USED POST
                     if self.txt:
                         self.db.delete(current_twt)
 

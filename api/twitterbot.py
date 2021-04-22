@@ -29,9 +29,9 @@ class Twitterbot:
             wait_on_rate_limit_notify=True
         )
         self.get_access()
-        # DEFINIUJEMY DWIE LISTY DO POZNIEJSZEGO UZYTKU
-        # returned_list to lista osob ktore obserwujesz
-        # returned_list2 to lista osob ktore obserwuja ciebie
+        # DEFINE TWO LISTS FOR LATER USE
+        # returned_list IS A LIST OF PEOPLE YOU FOLLOW
+        # returned_list2 IS A LIST OF PEOPLE THAT FOLLOW YOU
         self.returned_list = self.check_who_you_follow()
         self.returned_list2 = self.check_who_follows_you()
 
@@ -50,7 +50,7 @@ class Twitterbot:
         # GET ACCESS IS HANDLED AUTOMATICALLY BY __init__() METHOD!
 
         print("Trying to connect to your Twitter account")
-        # sprawdza czy jest polaczenie
+        # CHECKS FOR CONNECTION
         try:
             self.myself = self.api.me()
 
@@ -69,20 +69,11 @@ class Twitterbot:
         EMAIL_RECEIVER = os.getenv("EMAIL_REC")
         TRACEBACK = traceback.format_exc()
 
-        # with open("error.txt", "w") as f:
-        #     f.write(traceback.format_exc())
-
         msg = EmailMessage()
         msg["Subject"] = "Error has occured!"
         msg["From"] = EMAIL_ADDRESS
         msg["To"] = EMAIL_RECEIVER
         msg.set_content(f"{TRACEBACK}")
-
-        # with open("error.txt", "rb") as f:
-        #     file_data = f.read()
-        #     file_name = f.name
-
-        # msg.add_attachment(file_data, maintype="textfile", subtype="txt", filename=file_name)
 
         try:
             with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
@@ -92,7 +83,6 @@ class Twitterbot:
             print(e.reason)
             input("Press anything to continue...")
 
-    # Czas
     def what_time(self):
 
         t = time.localtime()
@@ -100,7 +90,7 @@ class Twitterbot:
 
         return current_time
 
-    # Wykorzystany w funkcji follow_random
+    # USED IN follow_random()
     def randomizer(self, number):
 
         return randint(0, number)
@@ -355,13 +345,10 @@ class Twitterbot:
             "awesome"
         ]
 
-        # removes https
+        # Removes http
         just_text = text.split("http")
-        # words_in_arg = len(just_text[0].split())
         bad_cnt = 0
         good_cnt = 0
-        # print(just_text[0])
-        # print(words_in_arg)
 
         for bad_word in blacklisted:
 
@@ -379,8 +366,6 @@ class Twitterbot:
                 if arg in just_text[0]:
                     good_cnt += 1
 
-        # print(f"Bad words: {bad_cnt}, Good words: {good_cnt}")
-
         # If there are 2 times more good words than bad words or there are no bad words then True
         if bad_cnt == 0 or good_cnt > (bad_cnt * 2):
             return True
@@ -389,7 +374,7 @@ class Twitterbot:
 
     def tweet_like(self, hmany, relate, w_time, reply):
 
-        # Dzieki temu tekst nie nachodzi na siebie
+        # THANKS TO THIS THE TEXT DOESN'T OVERLAP
         time.sleep(0.3)
 
         msgs = [
@@ -410,7 +395,6 @@ class Twitterbot:
 
             try:
                 author_id = tweet.author._json["id"]
-                # author = str(tweet.author._json["screen_name"])
                 twt_id = tweet._json["id"]
                 try:
                     twt_txt = tweet.retweeted_status.full_text
@@ -441,7 +425,6 @@ class Twitterbot:
                 else:
                     print(f"3. {Fore.YELLOW}{err.reason}{Style.RESET_ALL}")
                     return
-                # DZIWNE ROZWIAZANIE, NIE ROZUMIEM ZA BARDZO CZEMU NIE JEST PO PROSTU EXCEPT -> continue
 
             else:
                 time.sleep(int(w_time))
@@ -479,7 +462,6 @@ class Twitterbot:
 
         already_followed = []
 
-        # Zapisz ID uzytkownikow ktorych obserwujesz
         for friend_id in tweepy.Cursor(self.api.friends_ids).items():
 
             already_followed.append(friend_id)
@@ -512,7 +494,7 @@ class Twitterbot:
 
     def unfollow_v2(self, w_time):
 
-        # Dzieki temu tekst nie nachodzi na siebie
+        # THANKS TO THIS TEXT DOESN'T OVERLAP
         time.sleep(0.2)
 
         print(f"2. {Fore.CYAN}Searching for people to unfollow{Style.RESET_ALL}")
@@ -554,29 +536,19 @@ class Twitterbot:
             self.api.send_direct_message(recipient_id=per_id, text=msg[val2])
 
         except tweepy.TweepError:
-            # print(f"4. {Fore.YELLOW}{per_sn} Doesn\'t receive direct messages from strangers{Style.RESET_ALL}")
             return
 
     def follow_random(self, relate, ile_fo, w_time, reply):
 
-        # returned_list = self.check_if_you_follow()
         already_sent = self.check_if_dm_already_sent()
         value = self.randomizer(50)
 
         print(f"4. {Fore.CYAN}Looking for {ile_fo} users to follow{Style.RESET_ALL}")
 
-        # try:
-        # Petla do wielu stron
-        # while j >= 1:
-
-        # (SLOWO, ILE OSOB ZE STRONY, ILE STRON/STRONA)
+        # (QUERY, HOW MANY USERS FROM THAT PAGE, HOW MANY PAGES)
         users = self.api.search_users(q=relate, count=ile_fo, page=value)
 
         for person in users:
-
-            # Przejdz do nastepnej strony
-            # if i < 1:
-            # j -= 1
 
             if person.id in self.returned_list:
                 continue
@@ -598,4 +570,3 @@ class Twitterbot:
                     time.sleep(int(w_time))
 
         print(f"4. {Fore.GREEN}Done following new users!{Style.RESET_ALL}")
-        # self.my_db.close_db()
