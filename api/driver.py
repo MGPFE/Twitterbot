@@ -94,7 +94,7 @@ class Driver:
             self.img_scraper = Image_Scraper()
             if self.karm:
                 web_page = input("\nPlease input a link for images: ")
-                self.img_scraper.foodforbot(web_page)
+                self.img_scraper.scrape(web_page)
 
             else:
                 try:

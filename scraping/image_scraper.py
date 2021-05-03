@@ -1,11 +1,11 @@
 from colorama import init, Fore, Style
-from selenium import webdriver
 from bs4 import BeautifulSoup
-from io import BytesIO
-from PIL import Image
 import threading
 import requests
+import sys
 import os
+
+# TODO REWRITE THE ENTIRE THING
 
 # COLORAMA
 init(convert=True)
@@ -15,7 +15,8 @@ class Image_Scraper:
 
     def __init__(self):
 
-        self.real_list = []
+        self.real_list = list()
+        self.bytes_list = list()
         self.var = 1
         self.i = 0
 
@@ -35,60 +36,64 @@ class Image_Scraper:
     def download_image(self, URL, file_name):
 
         r = requests.get(URL)
-        im = Image.open(BytesIO(r.content))
-        im.save(str(file_name) + ".jpg")
+        content = r.content
+        if content not in self.bytes_list and int(sys.getsizeof(content)) > 40000:
+            self.bytes_list.append(content)
+            with open(f"{str(file_name)}.png", "wb") as f:
+                f.write(content)
 
-    def foodforbot(self, page):
-
-        browser = webdriver.Chrome()
+    def scrape(self, page):
 
         unsupported_ext = [
-            "spacer", ".png", ".jpeg",
-            ".mp4", ".mov", "logo", ".gif"
+            "spacer", ".mp4", ".mov",
+            "logo", ".gif"
         ]
 
-        while self.var <= 1:
+        # while self.var <= 1:
 
-            URL = page
+        URL = page
 
-            browser.get(URL)
+        r = requests.get(URL)
 
-            data = BeautifulSoup(browser.page_source, "html.parser")
+        data = BeautifulSoup(r.text, "html.parser")
 
-            try:
+        try:
 
-                for src in data.find_all("img"):
+            for src in data.find_all("img"):
 
-                    if len(self.real_list) >= 200:
-                        break
+                if len(self.real_list) >= 200:
+                    break
 
-                    for ext in unsupported_ext:
-                        if ext in src["src"]:
-                            continue
+                for ext in unsupported_ext:
+                    if ext in src["src"]:
+                        continue
 
-                    self.real_list.append(src["src"])
+                self.real_list.append(src["src"])
 
-            except KeyError:
-                print(f"\n{Fore.RED}Couldn\'t download any images from this page!{Style.RESET_ALL}")
-                return
+        except KeyError:
+            print(f"\n{Fore.RED}Couldn\'t download any images from this page!{Style.RESET_ALL}")
+            return
 
-            self.var += 1
+            # self.var += 1
 
-        self.create_folder()
+        if self.real_list:
 
-        threads = []
+            self.create_folder()
 
-        for item in self.real_list:
+            threads = []
 
-            t = threading.Thread(target=self.download_image, args=(item, self.i))
-            try:
-                t.start()
-                threads.append(t)
-            except Exception as e:
-                pass
-            self.i += 1
+            for item in self.real_list:
 
-        for thread in threads:
-            thread.join()
+                t = threading.Thread(target=self.download_image, args=(item, self.i))
+                try:
+                    t.start()
+                    threads.append(t)
+                except Exception as e:
+                    pass
+                self.i += 1
 
-        browser.close()
+            for thread in threads:
+                thread.join()
+
+        else:
+            input("\nCouldn't get any images...")
