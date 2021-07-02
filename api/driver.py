@@ -95,7 +95,8 @@ class Driver:
                 print(f"\nPlease wait, searching for {q}...")
                 try:
                     amount_dld = self.img_scraper.scrape(q)
-                except Exception:
+                except Exception as e:
+                    input(e)
                     return False
                 else:
                     print(f"\nYou have {amount_dld} images!")
