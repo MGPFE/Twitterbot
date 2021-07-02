@@ -61,7 +61,6 @@ class Twitterbot:
     # USED IN follow_random()
     @staticmethod
     def randomizer(number):
-
         return randint(0, number)
 
     @staticmethod
