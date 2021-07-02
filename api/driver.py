@@ -93,7 +93,6 @@ class Driver:
             if self.karm:
                 q = input("\nInput your query: ")
                 print(f"\nPlease wait, searching for {q}...")
-            else:
                 try:
                     amount_dld = self.img_scraper.scrape(q)
                 except Exception:
