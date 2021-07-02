@@ -72,11 +72,10 @@ class ImageScraper(Image_Scraper):
                     im.load()
                     im.transpose(Image.FLIP_LEFT_RIGHT)
                     im.close()
-                except UnidentifiedImageError as e:
+                # except UnidentifiedImageError as e:
+                #     os.remove(file)
+                except Exception:
                     os.remove(file)
-
-                except AttributeError:
-                    pass
 
             files = [f for f in os.listdir(os.getcwd()) if os.path.isfile(os.path.join(os.getcwd(), f))]
             processes = []
