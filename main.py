@@ -1,6 +1,7 @@
 from colorama import init, Fore, Style
 from configparser import ConfigParser
 from api.twitterbot import Twitterbot
+from misc.misc_funcs import email_err, check_os
 from api.driver import Driver
 from scraping.databases import Db
 import platform
@@ -16,18 +17,13 @@ class Main:
 
     def __init__(self):
         self.version = {
-            "ver": "1.3.8",
-            "date": "17.04.2021",
-            "time": "20:46"
+            "ver": "1.3.9",
+            "date": "2.07.2021",
+            "time": "8:53"
         }
         self.create_config()
         self.set_vars()
-
-        # USTALENIE SYSTEMU
-        if sys.platform == "linux":
-            self.clear = "clear"
-        elif sys.platform == "win32":
-            self.clear = "CLS"
+        self.clear = check_os()
 
     def create_config(self):
         # CONFIG FILE
@@ -87,7 +83,7 @@ class Main:
     def set_vars(self):
 
         if self.CONFIG_CREATED:
-            # LADOWANIE WARTOSCI ZMIENNYCH ZAPISANYCH W CONFIGU JESLI ISTNIEJE
+            # LOAD CONFIG VALUES IF EXISTS
             # Themes
             self.themetab = [Fore.CYAN, Fore.BLUE, Fore.MAGENTA, Fore.WHITE]
             self.theme = self.themetab[self.config.getint("Theme", "current")]
@@ -137,7 +133,7 @@ class Main:
             ]
 
         else:
-            # DEFAULTOWE ZMIENNE, SA USTAWIANE PRZY TWORZENIU NOWEGO CONFIGU
+            # DEFAULT VARS IF CONFIG DOESN'T EXIST
             # Themes
             self.themetab = [Fore.CYAN, Fore.BLUE, Fore.MAGENTA, Fore.WHITE]
             self.theme = self.themetab[0]
@@ -166,7 +162,6 @@ class Main:
             self.DISPLAY_VER = False
             self.authtab = []
 
-    # DEFINIOWANIE FUNKCJI
     def authinput(self):
 
         names = [
@@ -191,12 +186,12 @@ class Main:
         try:
 
             if self.authtab[0] == "None":
-                # Tymczasowa tabelka zeby authtab[0] dalej rownalo sie "None"
+                # TEMPORARY TABLE THAT KEEPS authtab[0] AT NONE
                 temp_tab = self.authinput()
                 if len(temp_tab) == 0:
                     return False
                 else:
-                    # Jezeli cos zostalo wpisane w temp_tab to przypisz to do self.authtab
+                    # IF INPUT IS NOT NONE THEN INPUT INTO temp_tab
                     self.authtab = temp_tab
 
             self.t_bot = Twitterbot(
@@ -207,13 +202,11 @@ class Main:
             )
 
         except Exception:
-            # print(f"{Fore.RED}Cannot create a Twitterbot object!{Style.RESET_ALL}")
-            # input(f"\nPress {self.theme}ENTER{Style.RESET_ALL} to exit...")
             self.authtab[0] = "None"
             pass
 
         else:
-            # WPISZ KODY DOSTEPU DO CONFIGU
+            # INPUT ACCESS KEYS INTO CONFIG
             if self.CONFIG_CREATED:
                 names = [
                     "apikey", "apisecretkey",
@@ -226,19 +219,11 @@ class Main:
             input(f"\nPress {self.theme}ENTER{Style.RESET_ALL} to continue...")
             return True
 
-    # def clock(self):
-
-    #     while True:
-    #         tm = datetime.datetime.now()
-    #         timeFormatted = tm.strftime("%d-%m-%Y %H:%M:%S")
-    #         print(timeFormatted, end="\r", flush=True)
-    #         time.sleep(1)
-
     def mainloop(self):
 
         os.system(self.clear)
 
-        # WPISYWANIE KODOW DOSTEPU
+        # INPUT ACCESS KEYS
         self.AUTHORIZED = self.create_bot()
 
         # MAINLOOP
@@ -307,13 +292,8 @@ class Main:
                         ]
                         driver.modular_cycle(settings)
                     else:
-                        settings = [True, True, True, True, True, True]
+                        settings = [True for _ in range(6)]
                         driver.default_cycle(settings)
-
-                # elif self.mode == 1:
-                #     driver = Driver(self.karmienie, self.co_ile, None, self.related_to,
-                #                     None, self.ile_follow, self.text, self.image, self.t_bot)
-                #     driver.infinite_mode()
 
             # EDIT OPTIONS
             elif wybor == "2":
@@ -1021,7 +1001,7 @@ if __name__ == "__main__":
         app.mainloop()
     except Exception:
         if app.AUTHORIZED and app.send_errors:
-            app.t_bot.email_err()
+            email_err()
             print(f"\n{Fore.RED}Error has occured, data has been sent to the creator!{Style.RESET_ALL}")
         else:
             print(f"\n{Fore.RED}Error has occured!{Style.RESET_ALL}")

@@ -59,52 +59,5 @@ class Db:
     def delete(self, text):
 
         self.c.execute("SELECT tweet FROM tweets")
-        # nr = self.c.fetchone()
-        # print(nr[0])
         self.c.execute("DELETE FROM tweets WHERE tweet = (?)", (text,))
         self.conn.commit()
-
-
-# class User_db(Db):
-
-#     def __init__(self):
-
-#         self.conn = sqlite3.connect("tweet.db", check_same_thread=False)
-#         self.c = self.conn.cursor()
-
-#     def create_table(self):
-
-#         self.c.execute("""CREATE TABLE IF NOT EXISTS i_follow (
-#                 _id integer
-#             )""")
-#         self.conn.commit()
-
-#     def insert(self, _id):
-
-#         try:
-#             for i in _id:
-#                 self.c.execute("INSERT INTO i_follow VALUES (?)", (i,))
-#         except TypeError:
-#             self.c.execute("INSERT INTO i_follow VALUES (?)", (_id,))
-#         self.conn.commit()
-
-#     def fetch(self):
-
-#         self.c.execute("SELECT * FROM i_follow")
-#         items = self.c.fetchall()
-#         self.conn.commit()
-#         return items
-
-#     # def count_entries(self):
-
-#     #     self.c.execute("SELECT COUNT (*) FROM i_follow")
-#     #     count = self.c.fetchone()
-#     #     self.conn.commit()
-#     #     return count[0]
-
-#     def delete(self, del_id):
-
-#         self.c.execute("SELECT _id FROM i_follow")
-#         #print(nr[0])
-#         self.c.execute("DELETE FROM i_follow WHERE _id = (?)", (del_id,))
-#         self.conn.commit()

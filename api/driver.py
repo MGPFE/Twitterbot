@@ -1,4 +1,5 @@
-from scraping.image_scraper import Image_Scraper
+from scraping.img_scraperNEW import ImageScraper
+from misc.misc_funcs import what_time, check_os
 from scraping.databases import Db
 from colorama import init, Fore, Style
 import os
@@ -31,15 +32,12 @@ class Driver:
         self.bot = bot
         self.i = 0
 
-        if sys.platform == "win32":
-            self.clear = "CLS"
-        else:
-            self.clear = "clear"
+        self.clear = check_os()
 
     def wait(self):
 
         after = (self.co_il / 60) / 60
-        print(f"{Fore.CYAN}{self.bot.what_time()}{Style.RESET_ALL} -- Next action in {Fore.CYAN}{str(int(after))}{Style.RESET_ALL} hour/s! ({Fore.CYAN}{str(self.i)}{Style.RESET_ALL} tweet/s sent!)\n")
+        print(f"{Fore.CYAN}{what_time()}{Style.RESET_ALL} -- Next action in {Fore.CYAN}{str(int(after))}{Style.RESET_ALL} hour/s! ({Fore.CYAN}{str(self.i)}{Style.RESET_ALL} tweet/s sent!)\n")
         time.sleep(self.co_il)
 
     def prnt_timeline(self):
@@ -58,10 +56,10 @@ class Driver:
     def load_database(self):
 
         if self.txt:
-            # Dla wstawiania tekstu
+            # WHEN TEXT SCRAPER IS ACTIVE
             self.db = Db()
         ###############################################################
-        # Pobieranie postow
+        # GET POSTS FROM DATABASE
             if self.karm:
                 self.db.create_table()
                 self.db.insert()
@@ -69,8 +67,7 @@ class Driver:
             else:
                 self.db.create_table()
 
-        # Ladowanie postow do tabeli
-            # try:
+        # INSERT POSTS INTO A LIST
             self.how_many = self.db.count_entries()
 
             if self.how_many == 0:
@@ -88,37 +85,44 @@ class Driver:
                     return True
         ###############################################################
 
-        # Dla wstawiania samego obrazu
+        # WHEN IMAGE SCRAPER IS ACTIVE
         ###############################################################
         elif self.img:
-            # DEFINIOWANIE SCRAPERA OBRAZOW
-            self.img_scraper = Image_Scraper()
+            # CREATE AN INSTANCE OF IMAGE SCRAPER
+            self.img_scraper = ImageScraper()
             if self.karm:
-                web_page = input("\nPlease input a link for images: ")
-                self.img_scraper.foodforbot(web_page)
-
-            else:
+                q = input("\nInput your query: ")
+                print(f"\nPlease wait, searching for {q}...")
                 try:
-                    os.chdir("Files")
-                except FileNotFoundError:
-                    print(f"{Fore.YELLOW}\nYou don\'t have any images!{Style.RESET_ALL}")
+                    amount_dld = self.img_scraper.scrape(q)
+                except Exception:
                     return False
                 else:
-                    self.filenames = [name for name in os.listdir(".") if os.path.isfile(name)]
-                    return True
+                    print(f"\nYou have {amount_dld} images!")
+                    input("\nDone, press anything to continue...")
+                    # return True
+
+            try:
+                os.chdir("Files")
+            except FileNotFoundError:
+                print(f"{Fore.YELLOW}\nYou don\'t have any images!{Style.RESET_ALL}")
+                return False
+            else:
+                self.filenames = [name for name in os.listdir(".") if os.path.isfile(name)]
+                return True
         ###############################################################
 
     def run_threads(self, a_funcs):
 
         threads = [
-            threading.Thread(target=self.bot.follow_back, args=(self.wait_time,)) if a_funcs[1] else None,  # Zaobserwuj followersow
-            threading.Thread(target=self.bot.unfollow_v2, args=(self.wait_time,)) if a_funcs[2] else None,  # Odfollowuj osoby ktore cie nie obserwuja
+            threading.Thread(target=self.bot.follow_back, args=(self.wait_time,)) if a_funcs[1] else None,  # FOLLOW BACK FOLLOWERS
+            threading.Thread(target=self.bot.unfollow_v2, args=(self.wait_time,)) if a_funcs[2] else None,  # UNFOLLOW USERS THAT DON'T FOLLOW YOU
             threading.Thread(target=self.bot.tweet_like, args=(
                 self.ile_l,
                 self.related,
                 self.wait_time,
                 self.allow_reply,
-            )) if a_funcs[3] else None  # Lajkowanie tweetow tweetow (ile tweetow ma polajkowac, co ile sekund)
+            )) if a_funcs[3] else None  # LIKE TWEETS
         ]
 
         for thread in threads:
@@ -129,7 +133,7 @@ class Driver:
             if thread is not None:
                 thread.join()
 
-        # Zaobserwuj losowych uzytkownikow
+        # FOLLOW RANDOM USERS
         if a_funcs[4]:
             t4 = threading.Thread(target=self.bot.follow_random, args=(
                 self.related,
@@ -143,8 +147,8 @@ class Driver:
 
     def post_tweet(self, add_funcs):
 
-        # Postowanie i like"owanie tweetow
-        while self.i <= self.s_fix:          # bylo len(posty)
+        # POST AND LIKE TWEETS
+        while self.i <= self.s_fix:
             try:
                 if self.i == self.s_fix:
                     if self.txt:
@@ -192,17 +196,19 @@ class Driver:
                             break
 
                 elif self.img:
+                    # print(os.getcwd())
+                    # input(self.filenames[self.i])
                     sent = self.bot.post_tweet(self.filenames[self.i], self.img, self.i)
 
                 self.i += 1
 
-                # W przypadku postowania wiecej niz jednego tweeta
+                # IF MORE THAN ONE TWEET TO POST
                 if self.s_fix > 1:
                     t0 = threading.Thread(target=self.wait)
                     t0.start()
 
                 if sent:
-                    # Usuń użytego posta z bazy danych
+                    # DELETE USED POST
                     if self.txt:
                         self.db.delete(current_twt)
 
@@ -246,7 +252,7 @@ class Driver:
             DB_FLAG = self.load_database()
 
             if DB_FLAG:
-                print(f"{Fore.YELLOW}\nWARNING! it is recommended NOT to close the bot manually!{Style.RESET_ALL}")
+                print(f"{Fore.YELLOW}\n\nWARNING! it is recommended NOT to close the bot manually!{Style.RESET_ALL}")
                 self.prnt_timeline()
 
                 self.post_tweet(sett)
@@ -277,7 +283,7 @@ class Driver:
         DB_FLAG = self.load_database()
 
         if DB_FLAG:
-            print(f"{Fore.YELLOW}\nWARNING! it is recommended NOT to close the bot manually!{Style.RESET_ALL}")
+            print(f"{Fore.YELLOW}\n\nWARNING! it is recommended NOT to close the bot manually!{Style.RESET_ALL}")
             self.prnt_timeline()
 
             self.post_tweet(sett)
